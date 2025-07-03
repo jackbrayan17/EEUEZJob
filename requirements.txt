@@ -8,3 +8,4 @@ gunicorn
 django-allauth
 djangorestframework
 whitenoise
+django-tailwind
