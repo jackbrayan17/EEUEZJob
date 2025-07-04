@@ -41,9 +41,14 @@ def submit_testimonial(request):
     if request.method == 'POST':
         form = TestimonialForm(request.POST)
         if form.is_valid():
-            # Save to database (e.g., Testimonial model) - Placeholder
+            # Placeholder: Save to database (e.g., Testimonial model)
             messages.success(request, "Témoignage soumis avec succès !")
             return redirect('home')
     else:
         form = TestimonialForm()
     return render(request, 'core/submit_testimonial.html', {'form': form})
+
+@login_required
+def profile(request):
+    candidate_profile = getattr(request.user, 'candidate_profile', None)
+    return render(request, 'core/profile.html', {'candidate_profile': candidate_profile})
