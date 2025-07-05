@@ -27,6 +27,9 @@ def candidate_profile_create(request):
             profile.save()
             messages.success(request, "Profil créé avec succès !")
             return redirect('home')
+        else:
+            messages.error(request, "Erreur dans le formulaire. Vérifiez les champs.")
+            print(form.errors) #Déboguage à retirer plus tard
     else:
         form = CandidateProfileForm()
     return render(request, 'core/candidate_profile_form.html', {'form': form})
@@ -71,11 +74,11 @@ def ai_chatbot(request):
 def job_offer_list(request):
     """Affiche la liste des offres d'emploi avec tri par IA si profil existe."""
     job_offers = JobOffer.objects.filter(is_validated=True)
-    profile = request.user.candidate_profile
+    profile = getattr(request.user, 'candidate_profile', None)
 
     if profile:
         headers = {
-            "Authorization": f"Bearer {settings.API_KEY}",  # Utilisation de settings.API_KEY
+            "Authorization": f"Bearer {settings.API_KEY}",
             "Content-Type": "application/json"
         }
         payload = {
@@ -102,7 +105,7 @@ def job_offer_list(request):
 
     return render(request, 'core/job_offer_list.html', {
         'job_offers': job_offers,
-        'other_offers': job_offers[len(job_offers) // 2:] if profile and len(job_offers) > 6 else []  # Sépare après 6 offres
+        'other_offers': job_offers[len(job_offers) // 2:] if profile and len(job_offers) > 6 else []
     })
 
 def job_offer_detail(request, pk):

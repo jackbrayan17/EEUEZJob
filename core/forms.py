@@ -6,7 +6,7 @@ from .models import CandidateProfile
 class CandidateProfileForm(forms.ModelForm):
     class Meta:
         model = CandidateProfile
-        fields = ['full_name', 'skills', 'years_experience', 'education', 'cv_file', 'profile_picture', 'social_links']
+        fields = ['full_name', 'skills', 'years_experience', 'education', 'cv_file', 'profile_picture', 'social_links', 'sectors']
         widgets = {
             'skills': forms.Textarea(attrs={'rows': 4}),
             'education': forms.Textarea(attrs={'rows': 4}),

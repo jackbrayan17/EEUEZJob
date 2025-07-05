@@ -23,9 +23,10 @@ class CandidateProfile(models.Model):
     education = models.TextField(blank=True)  # Formations
     cv_file = models.FileField(upload_to='cvs/', blank=True, null=True)  # Fichier CV
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
-    social_links = models.JSONField(blank=True, null=True)  # Liens réseaux sociaux (ex: {"linkedin": "url", "twitter": "url"})
-    is_sponsored = models.BooleanField(default=False)  # Profil sponsorisé (payant)
+    social_links = models.JSONField(blank=True, null=True)  # Liens réseaux sociaux
+    is_sponsored = models.BooleanField(default=False)  # Profil sponsorisé
     created_at = models.DateTimeField(default=timezone.now)
+    sectors = models.ManyToManyField(Category, blank=True)  # Ajout de ce champ
 
     def __str__(self):
         return f"Profil de {self.full_name}"
