@@ -7,76 +7,114 @@
     {% load static %}
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Ajout du CSS personnalisé -->
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script> <!-- Remplacez par votre kit FontAwesome -->
 </head>
-<body class="bg-white font-poppins">
+<body class="bg-gray-100 font-poppins text-gray-800 flex flex-col min-h-screen">
     <!-- Navbar -->
-  <!-- Navbar -->
-<nav class="bg-gray-800 p-4 shadow-md">
-  <div class="container mx-auto flex justify-between items-center px-4">
-    <a href="{% url 'home' %}" class="text-white text-xl font-bold">EEUEZJob</a>
-
-    <!-- Hamburger Button (mobile) -->
-    <button id="menu-toggle" class="text-white focus:outline-none md:hidden">
-      <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-        <path d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
-
-    <!-- Menu Links -->
-    <div id="menu" class="hidden md:flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 mt-4 md:mt-0">
-      <a href="{% url 'home' %}" class="text-white hover:text-orange-300">Accueil</a>
-      <a href="{% url 'job_offer_list' %}" class="text-white hover:text-orange-300">Offres</a>
-      {% if user.is_authenticated %}
-        <a href="{% url 'candidate_profile_create' %}" class="text-white hover:text-orange-300">Profil</a>
-        <a href="{% url 'message_list' %}" class="text-white hover:text-orange-300">Messages</a>
-        <a href="{% url 'account_logout' %}" class="text-white hover:text-orange-300">Déconnexion</a>
-      {% else %}
-        <a href="{% url 'account_signup' %}" class="text-white hover:text-orange-300">S’inscrire</a>
-        <a href="{% url 'account_login' %}" class="text-white hover:text-orange-300">Se connecter</a>
-      {% endif %}
-    </div>
-  </div>
-</nav>
-
-
-    <!-- Messages -->
-    {% if messages %}
-        {% for message in messages %}
-            <div class="fixed top-4 right-4 bg-orange-500 text-white p-4 rounded-lg shadow-lg">
-                {{ message }}
+    <header class="header bg-[#2C3E50] text-white shadow-md">
+        <div class="nav-container max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
+            <div class="logo">
+                <h1 class="text-xl font-bold text-[#FF8C42]">EEUEZJob</h1>
             </div>
-        {% endfor %}
-    {% endif %}
-    {% block content %}
-    {% endblock %}
+            <nav class="navigation">
+                <a href="{% url 'home' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Accueil</a>
+                <a href="{% url 'job_offer_list' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Offres</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'candidate_profile_create' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil</a>
+                    <a href="{% url 'message_list' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Messages</a>
+                    <a href="{% url 'account_logout' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Déconnexion</a>
+                {% else %}
+                    <a href="{% url 'account_signup' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">S’inscrire</a>
+                    <a href="{% url 'account_login' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Se connecter</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
 
-    <!-- AI Assistant -->
-    <div id="ai-assistant" class="fixed bottom-4 right-4 w-64 bg-white p-4 rounded-lg shadow-lg text-gray-700" style="display: none;">
-        <p>Assistant EEUEZJob : Comment puis-je vous aider aujourd'hui ?</p>
-    </div>
+    <!-- Messages flash -->
+    {% if messages %}
+        <div class="fixed top-4 right-4 z-50">
+            {% for message in messages %}
+                <div class="bg-orange-500 text-white p-3 rounded-lg shadow-lg mb-2 animate-fade-out">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Contenu principal -->
+    <main class="main-content flex-1 py-6">
+        {% block content %}{% endblock %}
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-white py-4 mt-8">
-        <div class="container mx-auto text-center text-gray-700">
-            © 2025 EEUEZJob. Tous droits réservés.
-        </div>
+    <footer class="footer bg-[#2C3E50] text-white text-center py-4">
+        <div class="container mx-auto">© 2025 EEUEZJob. Tous droits réservés.</div>
     </footer>
+
+    <!-- Bouton du chatbot -->
+    <button id="chatbotToggle" class="fixed bottom-4 right-4 bg-orange-500 text-white p-3 rounded-full shadow-lg hover:bg-orange-600 focus:outline-none transition-all">
+        💬
+    </button>
+
+    <!-- Boîte de dialogue du chatbot -->
+    <div id="chatbotBox" class="fixed bottom-16 right-4 w-80 bg-white p-4 rounded-lg shadow-lg hidden flex flex-col">
+        <div id="chatMessages" class="flex-1 overflow-y-auto mb-2 p-2 border-b">
+            <!-- Messages seront ajoutés ici dynamiquement -->
+        </div>
+        <input type="text" id="chatInput" class="w-full p-2 border rounded mb-2 focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Posez votre question...">
+        <button id="sendMessage" class="bg-orange-500 text-white p-2 rounded hover:bg-orange-600 transition-colors w-full">Envoyer</button>
+    </div>
 
     {% block extra_scripts %}
     <script>
+        // Toggle du menu mobile (non nécessaire ici car pas de menu hamburger)
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotBox = document.getElementById('chatbotBox');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendMessage = document.getElementById('sendMessage');
+
+        chatbotToggle.addEventListener('click', () => {
+            chatbotBox.classList.toggle('hidden');
+            if (!chatbotBox.classList.contains('hidden')) {
+                chatMessages.innerHTML = '<p class="text-gray-600">Assistant EEUEZJob : Comment puis-je vous aider aujourd\'hui ?</p>';
+            }
+        });
+
+        sendMessage.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            if (message) {
+                chatMessages.innerHTML += `<p class="text-blue-600"><strong>Vous :</strong> ${message}</p>`;
+                fetch('/chatbot/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `message=${encodeURIComponent(message)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    chatMessages.innerHTML += `<p class="text-green-600"><strong>IA :</strong> ${data.response}</p>`;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                });
+                chatInput.value = '';
+            }
+        });
+
         setInterval(() => {
-            const assistant = document.getElementById('ai-assistant');
-            assistant.style.display = assistant.style.display === 'none' ? 'block' : 'none';
-        }, 60000);
-        <script>
-  const menuToggle = document.getElementById('menu-toggle');
-  const menu = document.getElementById('menu');
-
-  menuToggle.addEventListener('click', () => {
-    menu.classList.toggle('hidden');
-  });
-</script>
-
+            if (!chatbotBox.classList.contains('hidden')) {
+                fetch('/chatbot/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'message=Comment vous en sortez-vous avec l\'application ?'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    chatMessages.innerHTML += `<p class="text-green-600"><strong>IA :</strong> ${data.response}</p>`;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                });
+            }
+        }, 120000);
     </script>
     {% endblock %}
 </body>

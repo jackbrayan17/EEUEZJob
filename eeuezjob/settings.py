@@ -12,6 +12,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Configuration de sécurité
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-kkh)wy2p1685hi%0dp5^izskku&+4pfy&3r7t5huwf3tvy6)v2')
 DEBUG = env.bool('DEBUG', default=True)  # True pour développement, False pour production
+# Clé API
+API_KEY = "xai-wE0vtnp66nEpfptPswNV70iK5k7MWL23NOrh1yDL3CgglsOA8uu90A0hnxKHeKqVkDpYXK1oncqi8fTR"
 
 # Hôtes autorisés
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost', 'https://eeuezjob.onrender.com'])

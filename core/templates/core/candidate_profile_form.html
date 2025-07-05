@@ -1,14 +1,90 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags static %}
+{% load static %}
 {% block content %}
-<section class="py-12 bg-white">
-    <div class="container mx-auto px-4 max-w-2xl">
-        <h2 class="text-3xl font-bold text-orange-500 font-poppins mb-6 text-center">Créer ou Modifier votre Profil</h2>
-        <form method="post" class="bg-white p-6 rounded-lg shadow-md">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <button type="submit" class="w-full bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">Enregistrer</button>
-        </form>
+<div class="form-container">
+    <h1 class="page-title">Créer ou Modifier votre Profil</h1>
+
+    <!-- Barre de progression -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-text" id="progressText">0% complété</div>
     </div>
-</section>
+
+    <!-- Formulaire -->
+    <form id="profileForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-user section-icon"></i> Informations personnelles</h2>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-signature label-icon"></i> Nom complet*</label>
+                <input type="text" id="fullName" name="full_name" class="form-input" required placeholder="Entrez votre nom complet">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-camera label-icon"></i> Photo de profil</label>
+                <div class="file-upload-zone">
+                    <input type="file" id="profilePicture" name="profile_picture" accept="image/jpeg,image/png" class="hidden">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <div class="upload-text">Glissez votre photo ici ou cliquez pour parcourir</div>
+                    <div class="upload-subtext">Formats acceptés: JPG, PNG (max 5MB)</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-link label-icon"></i> Liens sociaux</label>
+                <input type="text" id="socialLinks" name="social_links" class="form-input" placeholder="Ex: https://linkedin.com/in/votre-profil">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-graduation-cap section-icon"></i> Compétences et formation</h2>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-tools label-icon"></i> Compétences</label>
+                <input type="text" id="skills" name="skills" class="form-input" placeholder="Ex: Python, Gestion de projet">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-calendar-alt label-icon"></i> Années d'expérience*</label>
+                <input type="number" id="experience" name="years_experience" class="form-input" required placeholder="Ex: 5">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-book label-icon"></i> Formation</label>
+                <input type="text" id="education" name="education" class="form-input" placeholder="Ex: Master en Informatique">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-file-alt section-icon"></i> Documents et préférences</h2>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-file-pdf label-icon"></i> CV (fichier)</label>
+                <div class="file-upload-zone">
+                    <input type="file" id="cvFile" name="cv_file" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="hidden">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <div class="upload-text">Glissez votre CV ici ou cliquez pour parcourir</div>
+                    <div class="upload-subtext">Formats acceptés: PDF, DOC, DOCX (max 10MB)</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-industry label-icon"></i> Secteurs d'activité* (sélectionnez au moins 3)</label>
+                <div id="sectorsContainer" class="sectors-container"></div>
+                <div class="sector-selection-info" id="sectorCount">0 secteur(s) sélectionné(s) - Minimum 3 requis</div>
+            </div>
+        </div>
+
+        <button type="submit" id="submitButton" class="submit-button">Enregistrer mon profil</button>
+    </form>
+</div>
+
+{% block extra_scripts %}
+<script src="{% static 'js/script.js' %}"></script>
+<script>
+    // Assurez-vous que les IDs correspondent aux champs du formulaire
+    document.addEventListener('DOMContentLoaded', function() {
+        // Validation supplémentaire pour intégrer avec Django
+        const form = document.getElementById('profileForm');
+        form.addEventListener('submit', function(e) {
+            if (document.getElementById('submitButton').disabled) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}
 {% endblock %}
