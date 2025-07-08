@@ -1,5 +1,10 @@
+<!-- candidate_profile_form.html -->
 {% extends 'base.html' %}
 {% load static %}
+{% load widget_tweaks %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
 {% block content %}
 <div class="form-container">
     <h1 class="page-title">Créer ou Modifier votre Profil</h1>
@@ -10,52 +15,56 @@
         <div class="progress-text" id="progressText">0% complété</div>
     </div>
 
-    <!-- Formulaire -->
+    <!-- Formulaire Django -->
     <form id="profileForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        
+        <!-- Section Informations personnelles -->
         <div class="form-section">
             <h2 class="section-title"><i class="fas fa-user section-icon"></i> Informations personnelles</h2>
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-signature label-icon"></i> Nom complet*</label>
-                <input type="text" id="fullName" name="full_name" class="form-input" required placeholder="Entrez votre nom complet">
+                {{ form.full_name.label_tag }}
+                {{ form.full_name }}
             </div>
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-camera label-icon"></i> Photo de profil</label>
+                {{ form.profile_picture.label_tag }}
                 <div class="file-upload-zone">
-                    <input type="file" id="profilePicture" name="profile_picture" accept="image/jpeg,image/png" class="hidden">
+                    {{ form.profile_picture }}
                     <i class="fas fa-cloud-upload-alt upload-icon"></i>
                     <div class="upload-text">Glissez votre photo ici ou cliquez pour parcourir</div>
                     <div class="upload-subtext">Formats acceptés: JPG, PNG (max 5MB)</div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-link label-icon"></i> Liens sociaux</label>
-                <input type="text" id="socialLinks" name="social_links" class="form-input" placeholder="Ex: https://linkedin.com/in/votre-profil">
+                {{ form.social_links.label_tag }}
+                {{ form.social_links }}
             </div>
         </div>
 
+        <!-- Section Compétences et formation -->
         <div class="form-section">
             <h2 class="section-title"><i class="fas fa-graduation-cap section-icon"></i> Compétences et formation</h2>
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-tools label-icon"></i> Compétences</label>
-                <input type="text" id="skills" name="skills" class="form-input" placeholder="Ex: Python, Gestion de projet">
+                {{ form.skills.label_tag }}
+                {{ form.skills }}
             </div>
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-calendar-alt label-icon"></i> Années d'expérience*</label>
-                <input type="number" id="experience" name="years_experience" class="form-input" required placeholder="Ex: 5">
+                {{ form.years_experience.label_tag }}
+                {{ form.years_experience }}
             </div>
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-book label-icon"></i> Formation</label>
-                <input type="text" id="education" name="education" class="form-input" placeholder="Ex: Master en Informatique">
+                {{ form.education.label_tag }}
+                {{ form.education }}
             </div>
         </div>
 
+        <!-- Section Documents et préférences -->
         <div class="form-section">
             <h2 class="section-title"><i class="fas fa-file-alt section-icon"></i> Documents et préférences</h2>
             <div class="form-group">
-                <label class="form-label"><i class="fas fa-file-pdf label-icon"></i> CV (fichier)</label>
+                {{ form.cv_file.label_tag }}
                 <div class="file-upload-zone">
-                    <input type="file" id="cvFile" name="cv_file" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="hidden">
+                    {{ form.cv_file }}
                     <i class="fas fa-cloud-upload-alt upload-icon"></i>
                     <div class="upload-text">Glissez votre CV ici ou cliquez pour parcourir</div>
                     <div class="upload-subtext">Formats acceptés: PDF, DOC, DOCX (max 10MB)</div>
@@ -63,8 +72,15 @@
             </div>
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-industry label-icon"></i> Secteurs d'activité* (sélectionnez au moins 3)</label>
-                <div id="sectorsContainer" class="sectors-container"></div>
+                <div id="sectorsContainer" class="sectors-container">
+                    {% for category in categories %}
+                        <div class="sector-tag" data-sector="{{ category.id }}" tabindex="0" role="button" aria-pressed="false">
+                            {{ category.name }}
+                        </div>
+                    {% endfor %}
+                </div>
                 <div class="sector-selection-info" id="sectorCount">0 secteur(s) sélectionné(s) - Minimum 3 requis</div>
+                <input type="hidden" name="sectors" id="selectedSectorsInput" value="">
             </div>
         </div>
 
@@ -74,17 +90,5 @@
 
 {% block extra_scripts %}
 <script src="{% static 'js/script.js' %}"></script>
-<script>
-    // Assurez-vous que les IDs correspondent aux champs du formulaire
-    document.addEventListener('DOMContentLoaded', function() {
-        // Validation supplémentaire pour intégrer avec Django
-        const form = document.getElementById('profileForm');
-        form.addEventListener('submit', function(e) {
-            if (document.getElementById('submitButton').disabled) {
-                e.preventDefault();
-            }
-        });
-    });
-</script>
 {% endblock %}
 {% endblock %}

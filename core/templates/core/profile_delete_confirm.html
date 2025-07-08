@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="form-container">
+    <h1 class="page-title">Supprimer votre profil</h1>
+    {% if has_candidate_profile or has_recruiter_profile %}
+        <p>Êtes-vous sûr de vouloir supprimer votre profil ?</p>
+        {% if has_candidate_profile %}
+            <p>Votre profil candidat sera supprimé.</p>
+        {% endif %}
+        {% if has_recruiter_profile %}
+            <p>Votre profil recruteur sera supprimé.</p>
+        {% endif %}
+        <p>Cette action est irréversible. Vous pourrez ensuite créer un nouveau profil de l'autre type.</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="submit-button">Confirmer la suppression</button>
+        </form>
+    {% else %}
+        <p>Vous n'avez aucun profil à supprimer.</p>
+        <a href="{% url 'home' %}" class="submit-button">Retour à l'accueil</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dark',
+    'widget_tweaks',  # Pour les ajustements de widgets dans les formulaires
 ]
 
 # Configuration pour crispy forms

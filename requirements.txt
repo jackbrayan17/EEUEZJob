@@ -8,3 +8,4 @@ whitenoise
 environ
 psycopg2-binary
 pillow
+django-widget-tweaks

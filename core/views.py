@@ -4,8 +4,8 @@ import requests
 import json
 from django.contrib.auth.decorators import login_required
 from django.conf import settings  # Pour accéder à API_KEY
-from .models import JobOffer, Message, CandidateProfile, Testimonial, Category
-from .forms import CandidateProfileForm, TestimonialForm
+from .models import JobOffer, Message, CandidateProfile, Testimonial, Category, RecruiterProfile
+from .forms import CandidateProfileForm, TestimonialForm, RecruiterProfileForm
 from django.contrib import messages
 from django.utils import timezone
 
@@ -16,10 +16,16 @@ def home(request):
 @login_required
 def candidate_profile_create(request):
     """Crée ou met à jour le profil candidat."""
-    if hasattr(request.user, 'candidate_profile'):
-        messages.info(request, "Vous avez déjà un profil candidat.")
+    has_candidate_profile = hasattr(request.user, 'candidate_profile')
+    has_recruiter_profile = hasattr(request.user, 'recruiter_profile')
+    
+    if has_candidate_profile and has_recruiter_profile:
+        messages.error(request, "Vous avez déjà un profil candidat et un profil recruteur. Vous ne pouvez en avoir qu'un seul.")
         return redirect('home')
-    if request.method == 'POST':
+    elif has_recruiter_profile:
+        messages.error(request, "Vous avez déjà un profil recruteur. Vous ne pouvez pas créer un profil candidat.")
+        return redirect('home')
+    elif request.method == 'POST':
         form = CandidateProfileForm(request.POST, request.FILES)
         if form.is_valid():
             profile = form.save(commit=False)
@@ -28,11 +34,66 @@ def candidate_profile_create(request):
             messages.success(request, "Profil créé avec succès !")
             return redirect('home')
         else:
-            messages.error(request, "Erreur dans le formulaire. Vérifiez les champs.")
-            print(form.errors) #Déboguage à retirer plus tard
+            messages.error(request, f"Erreur dans le formulaire : {form.errors}")
+            print(form.errors)  # Débogage
     else:
         form = CandidateProfileForm()
     return render(request, 'core/candidate_profile_form.html', {'form': form})
+
+@login_required
+@login_required
+def recruiter_profile_create(request):
+    """Crée ou met à jour le profil recruteur."""
+    has_candidate_profile = hasattr(request.user, 'candidate_profile')
+    has_recruiter_profile = hasattr(request.user, 'recruiter_profile')
+    
+    if has_candidate_profile and has_recruiter_profile:
+        messages.error(request, "Vous avez déjà un profil candidat et un profil recruteur. Vous ne pouvez en avoir qu'un seul.")
+        return redirect('home')
+    elif has_candidate_profile:
+        messages.error(request, "Vous avez déjà un profil candidat. Vous ne pouvez pas créer un profil recruteur.")
+        return redirect('home')
+    elif request.method == 'POST':
+        form = RecruiterProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            # Sauvegarde des données supplémentaires (ex. secteurs via JSON)
+            selected_sectors = request.POST.get('selectedSectors', '[]')
+            profile.sectors.set(json.loads(selected_sectors))  # Sauvegarde des secteurs
+            profile.save()
+            messages.success(request, "Profil recruteur créé avec succès !")
+            return redirect('home')
+        else:
+            messages.error(request, f"Erreur dans le formulaire : {form.errors}")
+            print(form.errors)
+    else:
+        form = RecruiterProfileForm()
+    return render(request, 'core/recruiter_profile_form.html', {'form': form})
+
+@login_required
+def profile_delete(request):
+    """Supprime le profil existant (candidat ou recruteur) de l'utilisateur."""
+    has_candidate_profile = hasattr(request.user, 'candidate_profile')
+    has_recruiter_profile = hasattr(request.user, 'recruiter_profile')
+
+    if not (has_candidate_profile or has_recruiter_profile):
+        messages.error(request, "Vous n'avez aucun profil à supprimer.")
+        return redirect('home')
+
+    if request.method == 'POST':
+        if has_candidate_profile:
+            request.user.candidate_profile.delete()
+            messages.success(request, "Votre profil candidat a été supprimé avec succès. Vous pouvez maintenant créer un profil recruteur.")
+        elif has_recruiter_profile:
+            request.user.recruiter_profile.delete()
+            messages.success(request, "Votre profil recruteur a été supprimé avec succès. Vous pouvez maintenant créer un profil candidat.")
+        return redirect('home')
+
+    return render(request, 'core/profile_delete_confirm.html', {
+        'has_candidate_profile': has_candidate_profile,
+        'has_recruiter_profile': has_recruiter_profile
+    })
 
 @login_required
 def ai_chatbot(request):
@@ -45,7 +106,7 @@ def ai_chatbot(request):
             return JsonResponse({"response": "Veuillez créer votre profil d'abord."})
 
         headers = {
-            "Authorization": f"Bearer {settings.API_KEY}",  # Utilisation de settings.API_KEY
+            "Authorization": f"Bearer {settings.API_KEY}",
             "Content-Type": "application/json"
         }
         payload = {
@@ -101,7 +162,7 @@ def job_offer_list(request):
                 ranked_ids = [int(id.strip()) for id in ai_response.split(',') if id.strip().isdigit()]
                 job_offers = sorted(job_offers, key=lambda x: ranked_ids.index(x.id) if x.id in ranked_ids else len(ranked_ids))
             except (ValueError, IndexError):
-                pass  # Fallback to default order if parsing fails
+                pass
 
     return render(request, 'core/job_offer_list.html', {
         'job_offers': job_offers,

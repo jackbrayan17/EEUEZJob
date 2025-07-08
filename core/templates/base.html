@@ -7,8 +7,9 @@
     {% load static %}
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Ajout du CSS personnalisé -->
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script> <!-- Remplacez par votre kit FontAwesome -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-gray-100 font-poppins text-gray-800 flex flex-col min-h-screen">
     <!-- Navbar -->
@@ -21,9 +22,18 @@
                 <a href="{% url 'home' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Accueil</a>
                 <a href="{% url 'job_offer_list' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Offres</a>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'candidate_profile_create' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil</a>
+                    <a href="{% url 'candidate_profile_create' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil Candidat</a>
+                    <a href="{% url 'recruiter_profile_create' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil Recruteur</a>
+                    <a href="{% url 'profile_delete' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Supprimer Profil</a>
                     <a href="{% url 'message_list' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Messages</a>
                     <a href="{% url 'account_logout' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Déconnexion</a>
+                    {% if user.candidate_profile %}
+                        <span class="text-sm ml-2">Type : Candidat</span>
+                    {% elif user.recruiter_profile %}
+                        <span class="text-sm ml-2">Type : Recruteur</span>
+                    {% else %}
+                        <span class="text-sm ml-2">Type : Aucun</span>
+                    {% endif %}
                 {% else %}
                     <a href="{% url 'account_signup' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">S’inscrire</a>
                     <a href="{% url 'account_login' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Se connecter</a>
@@ -69,7 +79,6 @@
 
     {% block extra_scripts %}
     <script>
-        // Toggle du menu mobile (non nécessaire ici car pas de menu hamburger)
         const chatbotToggle = document.getElementById('chatbotToggle');
         const chatbotBox = document.getElementById('chatbotBox');
         const chatMessages = document.getElementById('chatMessages');

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/recruiter_profile_form.css' %}">
+{% endblock %}
+{% block content %}
+<div class="form-container">
+    <h1 class="page-title">Créer votre Profil Recruteur</h1>
+
+    <!-- Barre de progression -->
+    <div class="progress-container">
+        <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+        <div id="progressText" class="progress-text">0% complété</div>
+    </div>
+
+    <form id="recruiterForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Informations de l'entreprise -->
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-building section-icon"></i> Informations de l'entreprise</h2>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-signature label-icon"></i> Nom de l'entreprise*</label>
+                {{ form.company_name|add_class:'form-input' }}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-image label-icon"></i> Logo de l'entreprise</label>
+                <div class="file-upload-zone">
+                    <input type="file" id="companyLogo" name="companyLogo" accept="image/jpeg,image/png,image/svg+xml" style="display: none;">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <div class="upload-text">Glissez votre logo ici ou cliquez pour parcourir</div>
+                    <div class="upload-subtext">Formats acceptés: JPG, PNG, SVG (max 5MB)</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-globe label-icon"></i> Site web de l'entreprise</label>
+                {{ form.company_website|add_class:'form-input' }}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-map-marker-alt label-icon"></i> Adresse de l'entreprise*</label>
+                {{ form.company_address|add_class:'form-input' }}
+            </div>
+        </div>
+
+        <!-- Informations du recruteur -->
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-user-tie section-icon"></i> Informations du recruteur</h2>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user label-icon"></i> Nom complet*</label>
+                {{ form.recruiter_name|add_class:'form-input' }}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-briefcase label-icon"></i> Poste/Fonction*</label>
+                {{ form.recruiter_position|add_class:'form-input' }}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-envelope label-icon"></i> Email professionnel*</label>
+                {{ form.recruiter_email|add_class:'form-input' }}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-phone label-icon"></i> Téléphone professionnel</label>
+                {{ form.recruiter_phone|add_class:'form-input' }}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fab fa-linkedin label-icon"></i> Profil LinkedIn</label>
+                {{ form.linkedin_profile|add_class:'form-input' }}
+            </div>
+        </div>
+
+        <!-- Description et secteurs d'activité -->
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-info-circle section-icon"></i> Description et secteurs d'activité</h2>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-align-left label-icon"></i> Description de l'entreprise*</label>
+                {{ form.company_description|add_class:'form-input' }}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-users label-icon"></i> Taille de l'entreprise*</label>
+                {{ form.company_size|add_class:'form-input' }}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-industry label-icon"></i> Secteurs d'activité* (sélectionnez au moins 1)</label>
+                <div id="sectorsContainer" class="sectors-container"></div>
+                <div id="sectorInfo" class="sector-selection-info">
+                    <span id="sectorCount">0</span> secteur(s) sélectionné(s) - Minimum 1 requis
+                </div>
+            </div>
+        </div>
+
+        <!-- Préférences de recrutement -->
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-search-plus section-icon"></i> Préférences de recrutement</h2>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-map label-icon"></i> Zones géographiques de recrutement</label>
+                {{ form.recruitment_areas|add_class:'form-input' }}
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-chart-line label-icon"></i> Niveaux d'expérience recherchés</label>
+                <div id="experienceLevelsContainer" class="experience-levels-container"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-file-contract label-icon"></i> Types de contrats proposés</label>
+                <div id="contractTypesContainer" class="contract-types-container"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-comment label-icon"></i> Message d'accueil pour les candidats</label>
+                {{ form.welcome_message|add_class:'form-input' }}
+            </div>
+        </div>
+
+        <button type="submit" id="submitButton" class="submit-button">Enregistrer mon profil recruteur</button>
+    </form>
+
+    <script src="{% static 'js/recruiter_profile_form.js' %}"></script>
+</div>
+{% endblock %}
+

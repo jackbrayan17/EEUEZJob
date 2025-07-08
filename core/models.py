@@ -151,3 +151,18 @@ class Testimonial(models.Model):
     class Meta:
         verbose_name = "Témoignage"
         verbose_name_plural = "Témoignages"
+# Modèle pour les statistiques d'utilisation
+class UsageStatistics(models.Model):
+    date = models.DateField(auto_now_add=True)
+    total_users = models.PositiveIntegerField(default=0)
+    total_job_offers = models.PositiveIntegerField(default=0)
+    total_applications = models.PositiveIntegerField(default=0)
+    total_messages = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Statistiques du {self.date}"
+
+    class Meta:
+        verbose_name = "Statistique d'utilisation"
+        verbose_name_plural = "Statistiques d'utilisation"
+        
