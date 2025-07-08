@@ -18,7 +18,7 @@ SECRET_KEY = 'django-insecure-kkh)wy2p1685hi%0dp5^izskku&+4pfy&3r7t5huwf3tvy6)v2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'eeuezjob-8egl.onrender.com','eeuez-job.com]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'eeuezjob-8egl.onrender.com','eeuez-job.com','www.eeuez-job.com']
 
 
 # Application definition
