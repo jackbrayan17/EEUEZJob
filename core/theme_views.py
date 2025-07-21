@@ -12,6 +12,8 @@ from django.utils.decorators import method_decorator
 from django.views import View
 import json
 import logging
+from django.conf import settings
+from django.db import models
 
 from .models import UserThemePreference
 

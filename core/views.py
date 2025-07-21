@@ -209,7 +209,7 @@ def profile(request):
 
 def home_dark(request):
     """Affiche la page d'accueil en thème sombre."""
-    return render(request, 'dark/templates/core/index.html')
+    return render(request, 'dark/core/index.html')
 
 @login_required
 def candidate_profile_create_dark(request):
@@ -236,7 +236,7 @@ def candidate_profile_create_dark(request):
             print(form.errors)  # Débogage
     else:
         form = CandidateProfileForm()
-    return render(request, 'dark/templates/core/candidate_profile_form.html', {'form': form})
+    return render(request, 'dark/core/candidate_profile_form.html', {'form': form})
 
 @login_required
 def recruiter_profile_create_dark(request):
@@ -262,7 +262,7 @@ def recruiter_profile_create_dark(request):
             messages.error(request, f"Erreur dans le formulaire : {form.errors}")
     else:
         form = RecruiterProfileForm()
-    return render(request, 'dark/templates/core/recruiter_profile_form.html', {'form': form})
+    return render(request, 'dark/core/recruiter_profile_form.html', {'form': form})
 
 @login_required
 def profile_delete_dark(request):
@@ -277,7 +277,7 @@ def profile_delete_dark(request):
         else:
             messages.error(request, "Aucun profil à supprimer.")
         return redirect('home_dark')
-    return render(request, 'dark/templates/core/profile_delete_confirm.html')
+    return render(request, 'dark/core/profile_delete_confirm.html')
 
 def job_offer_list_dark(request):
     """Affiche la liste des offres d'emploi avec tri par IA en thème sombre."""
@@ -308,7 +308,7 @@ def job_offer_list_dark(request):
             except (ValueError, IndexError):
                 pass
 
-    return render(request, 'dark/templates/core/job_offer_list.html', {
+    return render(request, 'dark/core/job_offer_list.html', {
         'job_offers': job_offers,
         'other_offers': job_offers[len(job_offers) // 2:] if profile and len(job_offers) > 6 else []
     })
@@ -316,13 +316,13 @@ def job_offer_list_dark(request):
 def job_offer_detail_dark(request, pk):
     """Affiche les détails d'une offre d'emploi spécifique en thème sombre."""
     job_offer = JobOffer.objects.get(pk=pk, is_validated=True)
-    return render(request, 'dark/templates/core/job_offer_detail.html', {'job_offer': job_offer})
+    return render(request, 'dark/core/job_offer_detail.html', {'job_offer': job_offer})
 
 @login_required
 def message_list_dark(request):
     """Affiche la liste des messages reçus par l'utilisateur en thème sombre."""
     messages_received = Message.objects.filter(recipient=request.user)
-    return render(request, 'dark/templates/core/message_list.html', {'messages': messages_received})
+    return render(request, 'dark/core/message_list.html', {'messages': messages_received})
 
 def submit_testimonial_dark(request):
     """Gère la soumission d'un témoignage en thème sombre."""
@@ -339,10 +339,10 @@ def submit_testimonial_dark(request):
             return redirect('home_dark')
     else:
         form = TestimonialForm()
-    return render(request, 'dark/templates/core/submit_testimonial.html', {'form': form})
+    return render(request, 'dark/core/submit_testimonial.html', {'form': form})
 
 @login_required
 def profile_dark(request):
     """Affiche le profil de l'utilisateur connecté en thème sombre."""
     candidate_profile = getattr(request.user, 'candidate_profile', None)
-    return render(request, 'dark/templates/core/profile.html', {'candidate_profile': candidate_profile})
+    return render(request, 'dark/core/profile.html', {'candidate_profile': candidate_profile})
