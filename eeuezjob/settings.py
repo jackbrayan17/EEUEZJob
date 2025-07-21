@@ -75,7 +75,9 @@ ROOT_URLCONF = 'eeuezjob.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Dossiers de templates personnalisés
+        'DIRS': [BASE_DIR / 'templates',
+            BASE_DIR / 'core' / 'templates',
+            BASE_DIR / 'dark' / 'templates',],  # Dossiers de templates personnalisés
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

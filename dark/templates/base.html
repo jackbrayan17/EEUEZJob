@@ -30,13 +30,13 @@
             </div>
             
             <nav class="navigation">
-                <a href="{% url 'home' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Accueil</a>
-                <a href="{% url 'job_offer_list' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Offres</a>
+                <a href="{% url 'home_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Accueil</a>
+                <a href="{% url 'job_offer_list_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Offres</a>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'candidate_profile_create' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil Candidat</a>
-                    <a href="{% url 'recruiter_profile_create' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil Recruteur</a>
-                    <a href="{% url 'profile_delete' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Supprimer Profil</a>
-                    <a href="{% url 'message_list' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Messages</a>
+                    <a href="{% url 'candidate_profile_create_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil Candidat</a>
+                    <a href="{% url 'recruiter_profile_create_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil Recruteur</a>
+                    <a href="{% url 'profile_delete_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Supprimer Profil</a>
+                    <a href="{% url 'message_list_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Messages</a>
                     <a href="{% url 'account_logout' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Déconnexion</a>
                     {% if user.candidate_profile %}
                         <span class="text-sm ml-2 text-gray-300">Type : Candidat</span>
@@ -98,7 +98,7 @@
 
     {% block extra_scripts %}
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/theme-toggle.js' %}"></script>
+    <script src="{% static 'js/theme-toggle-simple.js' %}"></script>
     <script>
         $(document).ready(function() {
             $('#chatbotToggle').click(function() {
