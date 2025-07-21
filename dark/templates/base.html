@@ -7,13 +7,25 @@
     {% load static %}
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
     {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-gray-900 font-poppins text-gray-100 flex flex-col min-h-screen transition-colors duration-300">
+<body class="bg-gray-100 dark:bg-gray-900 font-poppins text-gray-800 dark:text-gray-100 flex flex-col min-h-screen transition-colors duration-300">
     <!-- Navbar -->
-    <header class="header bg-gray-800 text-white shadow-md border-b border-gray-700">
+    <header class="header bg-[#2C3E50] dark:bg-gray-800 text-white shadow-md dark:border-b dark:border-gray-700">
         <div class="nav-container max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
             <div class="logo">
                 <h1 class="text-xl font-bold text-[#FF8C42]">EEUEZJob</h1>
@@ -23,20 +35,20 @@
             <div class="theme-toggle-container flex items-center mr-4">
                 <span class="text-sm mr-2">🌙</span>
                 <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="themeToggle" class="sr-only peer" checked>
-                    <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                    <input type="checkbox" id="themeToggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-500"></div>
                 </label>
                 <span class="text-sm ml-2">☀️</span>
             </div>
             
             <nav class="navigation">
-                <a href="{% url 'home_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Accueil</a>
-                <a href="{% url 'job_offer_list_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Offres</a>
+                <a href="{% url 'home' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Accueil</a>
+                <a href="{% url 'job_offer_list' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Offres</a>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'candidate_profile_create_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil Candidat</a>
-                    <a href="{% url 'recruiter_profile_create_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil Recruteur</a>
-                    <a href="{% url 'profile_delete_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Supprimer Profil</a>
-                    <a href="{% url 'message_list_dark' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Messages</a>
+                    <a href="{% url 'candidate_profile_create' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil Candidat</a>
+                    <a href="{% url 'recruiter_profile_create' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Profil Recruteur</a>
+                    <a href="{% url 'profile_delete' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Supprimer Profil</a>
+                    <a href="{% url 'message_list' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Messages</a>
                     <a href="{% url 'account_logout' %}" class="nav-link hover:bg-[#FF8C42] transition-colors px-4 py-2 rounded">Déconnexion</a>
                     {% if user.candidate_profile %}
                         <span class="text-sm ml-2 text-gray-300">Type : Candidat</span>
@@ -70,38 +82,38 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer bg-gray-800 text-gray-300 text-center py-4 border-t border-gray-700">
+    <footer class="footer bg-[#2C3E50] dark:bg-gray-800 text-white dark:text-gray-300 text-center py-4 dark:border-t dark:border-gray-700">
         <div class="container mx-auto">© 2025 EEUEZJob. Tous droits réservés.</div>
     </footer>
 
     <!-- Bouton du chatbot -->
-    <button id="chatbotToggle" class="fixed bottom-4 right-4 bg-orange-500 text-white p-3 rounded-full shadow-lg hover:bg-orange-600 focus:outline-none transition-all">
+    <button id="chatbot-toggle" class="fixed bottom-4 right-4 bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-full shadow-lg focus:outline-none transition-all">
         💬
     </button>
-    <div id="chatbot-box" class="chatbot-box bg-gray-800 border border-gray-600 text-gray-100" style="display: none;">
+    <div id="chatbot-box" class="chatbot-box bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100" style="display: none;">
             <form method="post" action="{% url 'ai_chatbot' %}" id="chatbot-form">
                 {% csrf_token %}
-                <input type="text" id="chat-input" name="message" placeholder="Posez une question..." class="bg-gray-700 text-gray-100 border-gray-600">
+                <input type="text" id="chat-input" name="message" placeholder="Posez une question..." class="bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600">
                 <button type="submit" class="bg-orange-500 hover:bg-orange-600">Envoyer</button>
             </form>
-            <div id="chat-response" class="text-gray-100"></div>
+            <div id="chat-response" class="text-gray-800 dark:text-gray-100"></div>
     </div>
 
     <!-- Boîte de dialogue du chatbot -->
-    <div id="chatbotBox" class="fixed bottom-16 right-4 w-80 bg-gray-800 border border-gray-600 p-4 rounded-lg shadow-lg hidden flex flex-col">
-        <div id="chatMessages" class="flex-1 overflow-y-auto mb-2 p-2 border-b border-gray-600 text-gray-100">
+    <div id="chatbotBox" class="fixed bottom-16 right-4 w-80 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 p-4 rounded-lg shadow-lg hidden flex flex-col">
+        <div id="chatMessages" class="flex-1 overflow-y-auto mb-2 p-2 border-b border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100">
             <!-- Messages seront ajoutés ici dynamiquement -->
         </div>
-        <input type="text" id="chatInput" class="w-full p-2 border border-gray-600 bg-gray-700 text-gray-100 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Posez votre question...">
+        <input type="text" id="chatInput" class="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded mb-2 focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Posez votre question...">
         <button id="sendMessage" class="bg-orange-500 text-white p-2 rounded hover:bg-orange-600 transition-colors w-full">Envoyer</button>
     </div>
 
     {% block extra_scripts %}
      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/theme-toggle-simple.js' %}"></script>
+    <script src="{% static 'js/theme-toggle-tailwind.js' %}"></script>
     <script>
         $(document).ready(function() {
-            $('#chatbotToggle').click(function() {
+            $('#chatbot-toggle').click(function() {
                 $('#chatbot-box').toggle();
             });
 

@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<section class="py-12 bg-gray-100">
+<section class="py-12 bg-gray-100 dark:bg-gray-800">
     <div class="container mx-auto px-4">
         <h2 class="text-3xl font-bold text-orange-500 font-poppins mb-6 text-center">Offres d'Emploi</h2>
 
         <!-- Barre de recherche -->
         <div class="mb-6">
-            <input type="text" id="searchInput" placeholder="Rechercher une offre..." class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all">
+            <input type="text" id="searchInput" placeholder="Rechercher une offre..." class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all">
         </div>
 
         <!-- Liste des offres -->
@@ -15,12 +15,12 @@
             {% if job_offers %}
                 <!-- Offres pertinentes (premières 6 par défaut) -->
                 <div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Offres correspondant à votre profil</h3>
+                    <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Offres correspondant à votre profil</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="relevantOffers">
                         {% for offer in job_offers|slice:":6" %}
-                            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                            <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border dark:border-gray-600">
                                 <h3 class="text-xl font-semibold text-orange-500">{{ offer.title }}</h3>
-                                <p class="text-gray-700 mt-2 line-clamp-3">{{ offer.description }}</p>
+                                <p class="text-gray-700 dark:text-gray-300 mt-2 line-clamp-3">{{ offer.description }}</p>
                                 <a href="{% url 'job_offer_detail' offer.id %}" class="mt-4 inline-block text-orange-500 hover:underline transition-colors">Voir détails</a>
                             </div>
                         {% endfor %}
@@ -30,20 +30,20 @@
                 <!-- Autres offres -->
                 {% if other_offers %}
                     <div class="mt-8">
-                        <h3 class="text-xl font-semibold text-gray-600 mb-4">Autres offres</h3>
+                        <h3 class="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-4">Autres offres</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="otherOffers">
                             {% for offer in other_offers %}
-                                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                                    <h3 class="text-xl font-semibold text-gray-700">{{ offer.title }}</h3>
-                                    <p class="text-gray-600 mt-2 line-clamp-3">{{ offer.description }}</p>
-                                    <a href="{% url 'job_offer_detail' offer.id %}" class="mt-4 inline-block text-gray-500 hover:underline transition-colors">Voir détails</a>
+                                <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow border dark:border-gray-600">
+                                    <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300">{{ offer.title }}</h3>
+                                    <p class="text-gray-600 dark:text-gray-400 mt-2 line-clamp-3">{{ offer.description }}</p>
+                                    <a href="{% url 'job_offer_detail' offer.id %}" class="mt-4 inline-block text-gray-500 dark:text-gray-400 hover:underline transition-colors">Voir détails</a>
                                 </div>
                             {% endfor %}
                         </div>
                     </div>
                 {% endif %}
             {% else %}
-                <p class="text-gray-700 text-center">Aucune offre disponible pour le moment.</p>
+                <p class="text-gray-700 dark:text-gray-300 text-center">Aucune offre disponible pour le moment.</p>
             {% endif %}
         </div>
     </div>
