@@ -204,3 +204,145 @@ def profile(request):
     """Affiche le profil de l'utilisateur connecté."""
     candidate_profile = getattr(request.user, 'candidate_profile', None)
     return render(request, 'core/profile.html', {'candidate_profile': candidate_profile})
+
+# ===== VUES POUR LE THÈME SOMBRE =====
+
+def home_dark(request):
+    """Affiche la page d'accueil en thème sombre."""
+    return render(request, 'dark/templates/core/index.html')
+
+@login_required
+def candidate_profile_create_dark(request):
+    """Crée ou met à jour le profil candidat en thème sombre."""
+    has_candidate_profile = hasattr(request.user, 'candidate_profile')
+    has_recruiter_profile = hasattr(request.user, 'recruiter_profile')
+    
+    if has_candidate_profile and has_recruiter_profile:
+        messages.error(request, "Vous avez déjà un profil candidat et un profil recruteur. Vous ne pouvez en avoir qu'un seul.")
+        return redirect('home_dark')
+    elif has_recruiter_profile:
+        messages.error(request, "Vous avez déjà un profil recruteur. Vous ne pouvez pas créer un profil candidat.")
+        return redirect('home_dark')
+    elif request.method == 'POST':
+        form = CandidateProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            messages.success(request, "Profil créé avec succès !")
+            return redirect('home_dark')
+        else:
+            messages.error(request, f"Erreur dans le formulaire : {form.errors}")
+            print(form.errors)  # Débogage
+    else:
+        form = CandidateProfileForm()
+    return render(request, 'dark/templates/core/candidate_profile_form.html', {'form': form})
+
+@login_required
+def recruiter_profile_create_dark(request):
+    """Crée ou met à jour le profil recruteur en thème sombre."""
+    has_candidate_profile = hasattr(request.user, 'candidate_profile')
+    has_recruiter_profile = hasattr(request.user, 'recruiter_profile')
+    
+    if has_candidate_profile and has_recruiter_profile:
+        messages.error(request, "Vous avez déjà un profil candidat et un profil recruteur. Vous ne pouvez en avoir qu'un seul.")
+        return redirect('home_dark')
+    elif has_candidate_profile:
+        messages.error(request, "Vous avez déjà un profil candidat. Vous ne pouvez pas créer un profil recruteur.")
+        return redirect('home_dark')
+    elif request.method == 'POST':
+        form = RecruiterProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            messages.success(request, "Profil recruteur créé avec succès !")
+            return redirect('home_dark')
+        else:
+            messages.error(request, f"Erreur dans le formulaire : {form.errors}")
+    else:
+        form = RecruiterProfileForm()
+    return render(request, 'dark/templates/core/recruiter_profile_form.html', {'form': form})
+
+@login_required
+def profile_delete_dark(request):
+    """Gère la suppression du profil utilisateur en thème sombre."""
+    if request.method == 'POST':
+        if hasattr(request.user, 'candidate_profile'):
+            request.user.candidate_profile.delete()
+            messages.success(request, "Profil candidat supprimé avec succès.")
+        elif hasattr(request.user, 'recruiter_profile'):
+            request.user.recruiter_profile.delete()
+            messages.success(request, "Profil recruteur supprimé avec succès.")
+        else:
+            messages.error(request, "Aucun profil à supprimer.")
+        return redirect('home_dark')
+    return render(request, 'dark/templates/core/profile_delete_confirm.html')
+
+def job_offer_list_dark(request):
+    """Affiche la liste des offres d'emploi avec tri par IA en thème sombre."""
+    job_offers = JobOffer.objects.filter(is_validated=True)
+    profile = getattr(request.user, 'candidate_profile', None) if request.user.is_authenticated else None
+
+    if profile and job_offers.exists():
+        headers = {
+            "Authorization": f"Bearer {settings.XAI_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        job_list = "\n".join([f"ID: {job.id}, Titre: {job.title}, Secteur: {job.category.name if job.category else 'Non spécifié'}" for job in job_offers])
+        payload = {
+            "model": "grok-beta",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"Voici le profil du candidat:\nSecteurs d'intérêt: {', '.join([sector.name for sector in profile.sectors_of_interest.all()])}\nCompétences: {profile.skills}\n\nVoici les offres d'emploi disponibles:\n{job_list}\n\nClasse ces offres par ordre de pertinence pour ce candidat. Réponds uniquement avec les IDs séparés par des virgules, dans l'ordre de pertinence (du plus pertinent au moins pertinent)."
+                }
+            ]
+        }
+        response = requests.post("https://api.xai.com/v1/chat", headers=headers, data=json.dumps(payload))
+        if response.status_code == 200:
+            ai_response = response.json().get("choices", [{}])[0].get("message", {}).get("content", "")
+            try:
+                ranked_ids = [int(id.strip()) for id in ai_response.split(',') if id.strip().isdigit()]
+                job_offers = sorted(job_offers, key=lambda x: ranked_ids.index(x.id) if x.id in ranked_ids else len(ranked_ids))
+            except (ValueError, IndexError):
+                pass
+
+    return render(request, 'dark/templates/core/job_offer_list.html', {
+        'job_offers': job_offers,
+        'other_offers': job_offers[len(job_offers) // 2:] if profile and len(job_offers) > 6 else []
+    })
+
+def job_offer_detail_dark(request, pk):
+    """Affiche les détails d'une offre d'emploi spécifique en thème sombre."""
+    job_offer = JobOffer.objects.get(pk=pk, is_validated=True)
+    return render(request, 'dark/templates/core/job_offer_detail.html', {'job_offer': job_offer})
+
+@login_required
+def message_list_dark(request):
+    """Affiche la liste des messages reçus par l'utilisateur en thème sombre."""
+    messages_received = Message.objects.filter(recipient=request.user)
+    return render(request, 'dark/templates/core/message_list.html', {'messages': messages_received})
+
+def submit_testimonial_dark(request):
+    """Gère la soumission d'un témoignage en thème sombre."""
+    if request.method == 'POST':
+        form = TestimonialForm(request.POST)
+        if form.is_valid():
+            testimonial = Testimonial(
+                user=request.user,
+                content=form.cleaned_data['review'],
+                created_at=timezone.now()
+            )
+            testimonial.save()
+            messages.success(request, "Témoignage soumis avec succès !")
+            return redirect('home_dark')
+    else:
+        form = TestimonialForm()
+    return render(request, 'dark/templates/core/submit_testimonial.html', {'form': form})
+
+@login_required
+def profile_dark(request):
+    """Affiche le profil de l'utilisateur connecté en thème sombre."""
+    candidate_profile = getattr(request.user, 'candidate_profile', None)
+    return render(request, 'dark/templates/core/profile.html', {'candidate_profile': candidate_profile})

@@ -10,6 +10,9 @@ urlpatterns = [
     # Page d'accueil redirigée vers les routes de l'application core
     path('', include('core.urls')),
 
+    # Routes pour le thème sombre
+    path('dark/', include('dark.urls')),
+
     # Interface d'administration
     path('admin/', admin.site.urls),
 
@@ -44,3 +47,5 @@ urlpatterns = [
 # Ajout des URL pour les fichiers média en mode développement
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
