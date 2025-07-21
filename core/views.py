@@ -123,13 +123,15 @@ def ai_chatbot(request):
             ]
         }
 
-        response = requests.post("https://api.xai.com/v1/chat", headers=headers, data=json.dumps(payload))
-        if response.status_code == 200:
+        try:
+            response = requests.post("https://api.xai.com/v1/chat", headers=headers, data=json.dumps(payload))
+            response.raise_for_status()  # Lève une exception si le statut n'est pas 200
             ai_response = response.json().get("choices", [{}])[0].get("message", {}).get("content", "Désolé, je n'ai pas compris.")
             return JsonResponse({"response": ai_response})
-        return JsonResponse({"response": "Erreur lors de la communication avec l'IA."})
+        except requests.RequestException as e:
+            return JsonResponse({"response": f"Erreur lors de la communication avec l'IA : {str(e)}"})
 
-    return render(request, 'core/ai_chatbot.html')
+    return render(request, 'core/ai_chatbot.html')  
 
 @login_required
 def job_offer_list(request):

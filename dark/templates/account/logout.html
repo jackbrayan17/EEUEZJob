@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<section class="py-12 bg-white">
+    <div class="container mx-auto px-4 max-w-md">
+        <h2 class="text-3xl font-bold text-orange-500 font-poppins mb-6 text-center">Déconnexion</h2>
+        <p class="text-gray-700 text-center">Voulez-vous vraiment vous déconnecter ?</p>
+        <form method="post" action="{% url 'account_logout' %}" class="mt-6 text-center">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+            {% endif %}
+            <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">Oui, déconnecter</button>
+            <a href="{% url 'home' %}" class="ml-4 text-orange-500 hover:underline">Annuler</a>
+        </form>
+    </div>
+</section>
+{% endblock %}

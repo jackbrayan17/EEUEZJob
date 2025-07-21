@@ -14,6 +14,26 @@ class Category(models.Model):
         verbose_name = "Catégorie"
         verbose_name_plural = "Catégories"
 
+# Modèle pour les préférences de thème utilisateur
+class UserThemePreference(models.Model):
+    THEME_CHOICES = [
+        ('light', 'Clair'),
+        ('dark', 'Sombre'),
+        ('auto', 'Automatique'),
+    ]
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='theme_preference')
+    theme = models.CharField(max_length=10, choices=THEME_CHOICES, default='light')
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Thème de {self.user.username}: {self.get_theme_display()}"
+
+    class Meta:
+        verbose_name = "Préférence de thème"
+        verbose_name_plural = "Préférences de thème"
+
 # Modèle pour les profils candidats
 class CandidateProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='candidate_profile')
@@ -151,6 +171,7 @@ class Testimonial(models.Model):
     class Meta:
         verbose_name = "Témoignage"
         verbose_name_plural = "Témoignages"
+
 # Modèle pour les statistiques d'utilisation
 class UsageStatistics(models.Model):
     date = models.DateField(auto_now_add=True)
@@ -165,4 +186,4 @@ class UsageStatistics(models.Model):
     class Meta:
         verbose_name = "Statistique d'utilisation"
         verbose_name_plural = "Statistiques d'utilisation"
-        
+

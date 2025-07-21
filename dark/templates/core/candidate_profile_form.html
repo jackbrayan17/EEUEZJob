@@ -1,0 +1,94 @@
+<!-- candidate_profile_form.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
+{% block content %}
+<div class="form-container">
+    <h1 class="page-title">Créer ou Modifier votre Profil</h1>
+
+    <!-- Barre de progression -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-text" id="progressText">0% complété</div>
+    </div>
+
+    <!-- Formulaire Django -->
+    <form id="profileForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Section Informations personnelles -->
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-user section-icon"></i> Informations personnelles</h2>
+            <div class="form-group">
+                {{ form.full_name.label_tag }}
+                {{ form.full_name }}
+            </div>
+            <div class="form-group">
+                {{ form.profile_picture.label_tag }}
+                <div class="file-upload-zone">
+                    {{ form.profile_picture }}
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <div class="upload-text">Glissez votre photo ici ou cliquez pour parcourir</div>
+                    <div class="upload-subtext">Formats acceptés: JPG, PNG (max 5MB)</div>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form.social_links.label_tag }}
+                {{ form.social_links }}
+            </div>
+        </div>
+
+        <!-- Section Compétences et formation -->
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-graduation-cap section-icon"></i> Compétences et formation</h2>
+            <div class="form-group">
+                {{ form.skills.label_tag }}
+                {{ form.skills }}
+            </div>
+            <div class="form-group">
+                {{ form.years_experience.label_tag }}
+                {{ form.years_experience }}
+            </div>
+            <div class="form-group">
+                {{ form.education.label_tag }}
+                {{ form.education }}
+            </div>
+        </div>
+
+        <!-- Section Documents et préférences -->
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-file-alt section-icon"></i> Documents et préférences</h2>
+            <div class="form-group">
+                {{ form.cv_file.label_tag }}
+                <div class="file-upload-zone">
+                    {{ form.cv_file }}
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <div class="upload-text">Glissez votre CV ici ou cliquez pour parcourir</div>
+                    <div class="upload-subtext">Formats acceptés: PDF, DOC, DOCX (max 10MB)</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-industry label-icon"></i> Secteurs d'activité* (sélectionnez au moins 3)</label>
+                <div id="sectorsContainer" class="sectors-container">
+                    {% for category in categories %}
+                        <div class="sector-tag" data-sector="{{ category.id }}" tabindex="0" role="button" aria-pressed="false">
+                            {{ category.name }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="sector-selection-info" id="sectorCount">0 secteur(s) sélectionné(s) - Minimum 3 requis</div>
+                <input type="hidden" name="sectors" id="selectedSectorsInput" value="">
+            </div>
+        </div>
+
+        <button type="submit" id="submitButton" class="submit-button">Enregistrer mon profil</button>
+    </form>
+</div>
+
+{% block extra_scripts %}
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}
+{% endblock %}
